@@ -33,7 +33,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ✅ 4. Foydalanuvchini yangilash (UPDATE)
 router.put("/:id", async (req, res) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {

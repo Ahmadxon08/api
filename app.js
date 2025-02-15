@@ -4,10 +4,12 @@ const mongoose = require("mongoose");
 
 const app = express();
 app.use(express.json());
+const MONGO_URI =
+  "mongodb+srv://akhmadxonmoydinov:abu2001xon@cluster0.lh0nm.mongodb.net/mydb?retryWrites=true&w=majority";
 
 // MongoDB'ga ulanish
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB'ga muvaffaqiyatli ulandi!"))
   .catch((err) => console.error("❌ MongoDB ulanishda xatolik:", err.message));
 

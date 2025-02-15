@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema(
     tel: { type: String, required: true },
     description: { type: String, required: true },
   },
-  { timestamps: true } // createdAt va updatedAt avtomatik qo‘shiladi
+  { timestamps: true }
 );
 
 const User = mongoose.model("User", UserSchema);
