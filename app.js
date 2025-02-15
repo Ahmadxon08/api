@@ -1,9 +1,20 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+
+// CORS middleware qo‘shish
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Frontend URL
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
+
 const MONGO_URI =
   "mongodb+srv://akhmadxonmoydinov:abu2001xon@cluster0.lh0nm.mongodb.net/mydb?retryWrites=true&w=majority";
 
