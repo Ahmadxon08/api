@@ -7,12 +7,12 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     let counter = await Counter.findOneAndUpdate(
-      { name: "userId" }, // Faqat "userId" uchun ishlaydi
-      { $inc: { value: 1 } }, // ID ni 1 ga oshirish
-      { new: true, upsert: true } // Agar topilmasa, yaratish
+      { name: "userId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
     );
 
-    const newUser = new User({ ...req.body, id: counter.value }); // ID avtomatik
+    const newUser = new User({ ...req.body, id: counter.value });
     const savedUser = await newUser.save();
 
     res.status(201).json(savedUser);
@@ -43,7 +43,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
-      { id: Number(req.params.id) }, // ✅ `id` bo‘yicha qidaramiz
+      { id: Number(req.params.id) },
       req.body,
       { new: true }
     );
@@ -55,7 +55,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// ✅ 5. Foydalanuvchini o‘chirish (DELETE)
 router.delete("/:id", async (req, res) => {
   try {
     const deletedUser = await User.findOneAndDelete({
@@ -64,6 +63,16 @@ router.delete("/:id", async (req, res) => {
     if (!deletedUser)
       return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
     res.json({ message: "Foydalanuvchi o‘chirildi" });
+  } catch (err) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
+});
+router.delete("/all", async (req, res) => {
+  try {
+    const result = await User.deleteMany({});
+    res.json({
+      message: `✅ ${result.deletedCount} foydalanuvchi o‘chirildi!`,
+    });
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
   }
