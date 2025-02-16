@@ -63,21 +63,41 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const deletedUser = await User.findOneAndDelete({
-      id: Number(req.params.id),
-    });
-    if (!deletedUser)
+    const userId = Number(req.params.id);
+
+    const deletedUser = await User.findOneAndDelete({ id: userId });
+
+    if (!deletedUser) {
       return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
+    }
+
+    const lastUser = await User.findOne().sort({ id: -1 });
+    const newCounterValue = lastUser ? lastUser.id : 0;
+
+    await Counter.findOneAndUpdate(
+      { name: "userId" },
+      { value: newCounterValue },
+      { new: true, upsert: true }
+    );
+
     res.json({ message: "Foydalanuvchi o‘chirildi" });
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
   }
 });
+
 router.delete("/all", async (req, res) => {
   try {
-    const result = await User.deleteMany({});
+    await User.deleteMany({});
+
+    await Counter.findOneAndUpdate(
+      { name: "userId" },
+      { value: 0 },
+      { new: true, upsert: true }
+    );
+
     res.json({
-      message: `✅ ${result.deletedCount} foydalanuvchi o‘chirildi!`,
+      message: "Barcha foydalanuvchilar o‘chirildi, counter tiklandi",
     });
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
