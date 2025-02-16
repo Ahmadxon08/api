@@ -6,11 +6,17 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    let counter = await Counter.findOneAndUpdate(
-      { name: "userId" },
-      { $inc: { value: 1 } },
-      { new: true, upsert: true }
-    );
+    let counter = await Counter.findOne({ name: "userId" });
+
+    if (!counter) {
+      counter = await Counter.create({ name: "userId", value: 1 });
+    } else {
+      counter = await Counter.findOneAndUpdate(
+        { name: "userId" },
+        { $inc: { value: 1 } },
+        { new: true }
+      );
+    }
 
     const newUser = new User({ ...req.body, id: counter.value });
     const savedUser = await newUser.save();
@@ -57,16 +63,16 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
+    const deletedUser = await User.findOneAndDelete({
+      id: Number(req.params.id),
+    });
+    if (!deletedUser)
       return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
-    }
     res.json({ message: "Foydalanuvchi o‘chirildi" });
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
   }
 });
-
 router.delete("/all", async (req, res) => {
   try {
     const result = await User.deleteMany({});
