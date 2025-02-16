@@ -57,16 +57,16 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const deletedUser = await User.findOneAndDelete({
-      id: Number(req.params.id),
-    });
-    if (!deletedUser)
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
       return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
+    }
     res.json({ message: "Foydalanuvchi o‘chirildi" });
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
   }
 });
+
 router.delete("/all", async (req, res) => {
   try {
     const result = await User.deleteMany({});
