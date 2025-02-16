@@ -6,15 +6,17 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    let counter = await Counter.findOne({ name: "userId" });
+    let counter = await Counter.findOneAndUpdate(
+      { name: "userId" },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
 
-    if (!counter) {
-      counter = await Counter.create({ name: "userId", value: 1 });
-    } else {
+    if (!counter || isNaN(counter.value)) {
       counter = await Counter.findOneAndUpdate(
         { name: "userId" },
-        { $inc: { value: 1 } },
-        { new: true }
+        { value: 1 },
+        { new: true, upsert: true }
       );
     }
 
@@ -92,12 +94,12 @@ router.delete("/all", async (req, res) => {
 
     await Counter.findOneAndUpdate(
       { name: "userId" },
-      { value: 0 },
+      { value: 1 },
       { new: true, upsert: true }
     );
 
     res.json({
-      message: "Barcha foydalanuvchilar o‘chirildi, counter tiklandi",
+      message: "Barcha foydalanuvchilar o‘chirildi va counter 1 ga tiklandi",
     });
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
