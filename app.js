@@ -9,7 +9,7 @@ app.use(express.json());
 // CORS middleware qo‘shish
 app.use(
   cors({
-    origin: "http://localhost:3000", // Frontend URL
+    origin: ["http://localhost:3000", "https://sadaffdesntist.netlify.app"], // Frontend URL
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
   })
