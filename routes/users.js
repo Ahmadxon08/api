@@ -63,9 +63,9 @@ router.post("/jasur", async (req, res) => {
       .json({ message: "Xatolik yuz berdi", error: err.message });
   }
 });
-router.post("/zoir", async (req, res) => {
+router.get("/zoir", async (req, res) => {
   try {
-    return await addPatient(req, res, "zoir");
+    return await getPatients(req, res, "zoir");
   } catch (err) {
     return res
       .status(500)
