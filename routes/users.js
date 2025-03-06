@@ -35,22 +35,42 @@ router.post("/zoir", async (req, res) => {
 });
 
 router.post("/sardor", async (req, res) => {
-  await addPatient(req, res, "sardor");
+  try {
+    await addPatient(req, res, "sardor");
+  } catch (error) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
 });
 
 router.post("/jasur", async (req, res) => {
-  await addPatient(req, res, "jasur");
+  try {
+    await addPatient(req, res, "jasur");
+  } catch (error) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
 });
-router.get("/zoir", async (req, res) => {
-  await getPatients(req, res, "zoir");
+router.post("/zoir", async (req, res) => {
+  try {
+    await addPatient(req, res, "zoir");
+  } catch (err) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
 });
 
 router.get("/sardor", async (req, res) => {
-  await getPatients(req, res, "sardor");
+  try {
+    await getPatients(req, res, "sardor");
+  } catch (error) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
 });
 
 router.get("/jasur", async (req, res) => {
-  await getPatients(req, res, "jasur");
+  try {
+    await getPatients(req, res, "jasur");
+  } catch (error) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
 });
 
 router.get("/all", async (req, res) => {
