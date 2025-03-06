@@ -4,40 +4,65 @@ const Counter = require("../models/counter");
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+const addPatient = async (req, res, doctor) => {
   try {
     let counter = await Counter.findOneAndUpdate(
       { name: "userId" },
       { $inc: { value: 1 } },
-      { new: true, upsert: true }
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
 
-    if (!counter || isNaN(counter.value)) {
-      counter = await Counter.findOneAndUpdate(
-        { name: "userId" },
-        { value: 1 },
-        { new: true, upsert: true }
-      );
-    }
-
-    const newUser = new User({ ...req.body, id: counter.value });
+    const newUser = new User({ ...req.body, doctor, id: counter.value });
     const savedUser = await newUser.save();
 
     res.status(201).json(savedUser);
   } catch (err) {
+    console.error("Xatolik:", err);
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
   }
+};
+const getPatients = async (req, res, doctorName) => {
+  try {
+    const patients = await User.find({ doctor: doctorName });
+    res.status(200).json(patients);
+  } catch (err) {
+    res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
+  }
+};
+
+router.post("/zoir", async (req, res) => {
+  await addPatient(req, res, "zoir");
 });
 
-router.get("/", async (req, res) => {
+router.post("/sardor", async (req, res) => {
+  await addPatient(req, res, "sardor");
+});
+
+router.post("/jasur", async (req, res) => {
+  await addPatient(req, res, "jasur");
+});
+router.get("/zoir", async (req, res) => {
+  await getPatients(req, res, "zoir");
+});
+
+router.get("/sardor", async (req, res) => {
+  await getPatients(req, res, "sardor");
+});
+
+router.get("/jasur", async (req, res) => {
+  await getPatients(req, res, "jasur");
+});
+
+router.get("/all", async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
+    const patients = await User.find();
+    res.status(200).json(patients);
   } catch (err) {
     res.status(500).json({ message: "Xatolik yuz berdi", error: err.message });
   }
 });
-router.get("/:id", async (req, res) => {
+
+router.get("/all/:id", async (req, res) => {
   try {
     const user = await User.findOne({ id: Number(req.params.id) });
     if (!user)
@@ -48,7 +73,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/all/:id", async (req, res) => {
   try {
     const updatedUser = await User.findOneAndUpdate(
       { id: Number(req.params.id) },
@@ -63,7 +88,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/all/:id", async (req, res) => {
   try {
     const userId = Number(req.params.id);
 
@@ -94,7 +119,7 @@ router.delete("/all", async (req, res) => {
 
     await Counter.findOneAndUpdate(
       { name: "userId" },
-      { value: 1 },
+      { value: 0 },
       { new: true, upsert: true }
     );
 

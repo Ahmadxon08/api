@@ -6,10 +6,9 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 
-// CORS middleware qo‘shish
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://sadaffdentist.netlify.app"], // Frontend URL
+    origin: ["http://localhost:3000", "https://sadaffdentist.netlify.app"],
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
   })
@@ -26,7 +25,7 @@ mongoose
 
 // Routers
 const userRoutes = require("./routes/users");
-app.use("/users", userRoutes);
+app.use("/api", userRoutes);
 
 // Test route
 app.get("/", (req, res) => res.send("API ishlayapti 🚀"));
